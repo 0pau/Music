@@ -88,9 +88,6 @@ public class SongsFragment extends Fragment {
     }
 
     void getSongList() {
-
-
-
         //lv.setAdapter();
 
         String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION};
@@ -123,6 +120,9 @@ public class SongsFragment extends Fragment {
 
         ListView lv = (ListView) v.findViewById(R.id.songlist);
         lv.setAdapter(new SongAdapter(getContext(), 0, songs));
+
+        TextView sc = v.findViewById(R.id.songCount);
+        sc.setText(getResources().getQuantityString(R.plurals.song_count, songs.size(), songs.size()));
     }
 
     class Song {

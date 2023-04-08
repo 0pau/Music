@@ -15,17 +15,20 @@ import android.widget.FrameLayout;
 
 public class MainActivity extends AppCompatActivity {
 
+    Fragment active;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         SongsFragment songs = new SongsFragment();
-        Fragment active = songs;
+        ArtistsFragment artists = new ArtistsFragment();
+        active = songs;
 
         FragmentManager manager = getSupportFragmentManager();
 
         manager.beginTransaction().add(R.id.frame, songs, "songs").commit();
+        manager.beginTransaction().add(R.id.frame, artists, "songs").hide(artists).commit();
 
         FrameLayout fl = findViewById(R.id.frame);
 
@@ -34,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
             switch (index) {
                 case 0:
                     manager.beginTransaction().hide(active).show(songs).commit();
+                    active = songs;
+                    break;
+                case 1:
+                    manager.beginTransaction().hide(active).show(artists).commit();
+                    active = artists;
                     break;
             }
         });

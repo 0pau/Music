@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="55dp" android:height="55dp">
+        <shape android:shape="rectangle">
+            <gradient android:startColor="@color/brand_color" android:endColor="@color/brand_color_dark" android:angle="40"></gradient>
+        </shape>
+    </item>
+    <item android:width="24dp" android:height="24dp" android:gravity="center" android:drawable="@drawable/artists_white"></item>
+</layer-list>
