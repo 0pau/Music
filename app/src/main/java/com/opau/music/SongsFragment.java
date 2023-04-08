@@ -5,7 +5,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +22,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,11 +92,8 @@ public class SongsFragment extends Fragment {
         //lv.setAdapter();
 
         String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION};
-
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-
         Cursor musicCursor = getContext().getContentResolver().query(musicUri, projection, MediaStore.Audio.Media.IS_MUSIC + " != 0", null, "TITLE ASC");
-
         ArrayList<Song> songs = new ArrayList<>();
 
         Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
@@ -118,11 +116,23 @@ public class SongsFragment extends Fragment {
             musicCursor.close();
         }
 
+        Collator c = Collator.getInstance(Locale.getDefault());
+        c.setStrength(Collator.IDENTICAL);
+
+        songs.sort(new SongComparator());
+
         ListView lv = (ListView) v.findViewById(R.id.songlist);
         lv.setAdapter(new SongAdapter(getContext(), 0, songs));
 
         TextView sc = v.findViewById(R.id.songCount);
         sc.setText(getResources().getQuantityString(R.plurals.song_count, songs.size(), songs.size()));
+    }
+
+    private static class SongComparator implements Comparator<Song> {
+        Collator spCollator = Collator.getInstance(Locale.getDefault());
+        public int compare (Song e1, Song e2){
+            return spCollator.compare(e1.getTitle(), e2.getTitle());
+        }
     }
 
     class Song {
@@ -132,6 +142,10 @@ public class SongsFragment extends Fragment {
         public String album;
         public String duration;
         public Uri albumart;
+
+        public String getTitle() {
+            return title;
+        }
 
         public Song(long id, String title, String album, String artist, Uri art, String duration) {
             this.id = id;
