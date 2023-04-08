@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BottomNavigation">
+        <attr name="menuResource" format="integer" />
+    </declare-styleable>
+
+    <attr name="bg" format="color"/>
+    <attr name="fg" format="color"/>
+    <attr name="fg_alpha" format="color"></attr>
+    <attr name="borders" format="color"/>
+    <attr name="card" format="color"/>
+    <attr name="cardborder" format="color"/>
+</resources>
