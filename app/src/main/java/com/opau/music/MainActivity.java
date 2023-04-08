@@ -23,12 +23,14 @@ public class MainActivity extends AppCompatActivity {
 
         SongsFragment songs = new SongsFragment();
         ArtistsFragment artists = new ArtistsFragment();
+        PlaylistsFragment playlists = new PlaylistsFragment();
         active = songs;
 
         FragmentManager manager = getSupportFragmentManager();
 
         manager.beginTransaction().add(R.id.frame, songs, "songs").commit();
         manager.beginTransaction().add(R.id.frame, artists, "songs").hide(artists).commit();
+        manager.beginTransaction().add(R.id.frame, playlists, "songs").hide(playlists).commit();
 
         FrameLayout fl = findViewById(R.id.frame);
 
@@ -42,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     manager.beginTransaction().hide(active).show(artists).commit();
                     active = artists;
+                    break;
+                case 2:
+                    //albums
+                    break;
+                case 3:
+                    manager.beginTransaction().hide(active).show(playlists).commit();
+                    active = playlists;
                     break;
             }
         });
