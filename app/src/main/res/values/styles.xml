@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ToolBar" parent="Widget.AppCompat.Toolbar">
+        <item name="titleTextAppearance">@style/ToolBar.Title</item>
+        <item name="subtitleTextAppearance">@style/ToolBar.Subtitle</item>
+        <item name="android:background">?attr/card_alt</item>
+    </style>
+
+    <style name="ToolBar.Title" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?attr/fg</item>
+    </style>
+
+    <style name="ToolBar.Subtitle" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">?attr/fg_disabled</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="Theme.Music.Altered" parent="Theme.Music">
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:navigationBarColor">@color/transparent</item>
+    </style>
+</resources>

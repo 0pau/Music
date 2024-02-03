@@ -12,6 +12,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -50,15 +52,6 @@ public class SongsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SongsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SongsFragment newInstance(String param1, String param2) {
         SongsFragment fragment = new SongsFragment();
         Bundle args = new Bundle();
@@ -89,6 +82,7 @@ public class SongsFragment extends Fragment {
     }
 
     void getSongList() {
+        /*
         //lv.setAdapter();
 
         String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION};
@@ -126,75 +120,36 @@ public class SongsFragment extends Fragment {
 
         TextView sc = v.findViewById(R.id.songCount);
         sc.setText(getResources().getQuantityString(R.plurals.song_count, songs.size(), songs.size()));
+        */
+
+        RecyclerView rc = (RecyclerView) v.findViewById(R.id.songlist);
+        rc.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        rc.setAdapter(new RecyclerViewAdapter());
     }
 
-    private static class SongComparator implements Comparator<Song> {
-        Collator spCollator = Collator.getInstance(Locale.getDefault());
-        public int compare (Song e1, Song e2){
-            return spCollator.compare(e1.getTitle(), e2.getTitle());
-        }
-    }
-
-    class Song {
-        public long id;
-        public String title;
-        public String artist;
-        public String album;
-        public String duration;
-        public Uri albumart;
-
-        public String getTitle() {
-            return title;
-        }
-
-        public Song(long id, String title, String album, String artist, Uri art, String duration) {
-            this.id = id;
-            this.title = title;
-            this.artist = artist;
-            this.albumart = art;
-            this.album = album;
-            this.duration = duration;
-        }
-    }
-
-    class SongAdapter extends ArrayAdapter<Song> {
-
-        public SongAdapter(@NonNull Context context, int resource, ArrayList<Song> songs) {
-            super(context, 0, songs);
-        }
-
+    class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.SongViewHolder> {
         @NonNull
         @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        public SongViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_item, parent, false);
+            return new SongViewHolder(v);
+        }
 
-            Song song = getItem(position);
-            convertView = getLayoutInflater().inflate(R.layout.song_item, parent, false);
+        @Override
+        public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
 
-            TextView title = convertView.findViewById(R.id.song_title);
-            title.setText(song.title);
+        }
 
-            String sub = song.artist + " • " + song.album + " • " + formatMsDuration(song.duration);
+        @Override
+        public int getItemCount() {
+            return 22;
+        }
 
-            TextView artist = convertView.findViewById(R.id.song_artist);
-            artist.setText(sub);
+        public class SongViewHolder extends RecyclerView.ViewHolder {
 
-            ImageView art = convertView.findViewById(R.id.albumArt);
-            if (song.albumart != null) {
-                ImageDecoder.Source source = ImageDecoder.createSource(getContext().getContentResolver(), song.albumart);
-                Bitmap bmp = null;
-                try {
-                    bmp = ImageDecoder.decodeBitmap(source);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if (bmp != null) {
-                    art.setImageBitmap(bmp);
-                }
-
+            public SongViewHolder(@NonNull View itemView) {
+                super(itemView);
             }
-
-            return convertView;
         }
     }
 

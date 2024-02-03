@@ -22,6 +22,7 @@
     <color name="dark_bg_text">#FFFFFF</color>
     <color name="white_alpha">#B0FFFFFF</color>
 
-    <color name="brand_color">#D6236E</color>
-    <color name="brand_color_dark">#B11B5A</color>
+    <color name="brand_color_old">#D6236E</color>
+    <color name="brand_color">@color/material_dynamic_primary40</color>
+    <color name="brand_color_dark">@color/material_dynamic_primary30</color>
 </resources>

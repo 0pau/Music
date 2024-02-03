@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:width="55dp" android:height="55dp">
         <shape android:shape="rectangle">
-            <gradient android:startColor="@color/brand_color" android:endColor="@color/brand_color_dark" android:angle="40"></gradient>
+            <solid android:color="?attr/fg_accent2"></solid>
         </shape>
     </item>
     <item android:width="24dp" android:height="24dp" android:gravity="center" android:drawable="@drawable/musical_notes_white"></item>

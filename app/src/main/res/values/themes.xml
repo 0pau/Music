@@ -1,22 +1,21 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Music" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/bg</item>
-        <item name="android:windowLightStatusBar">true</item>
 
-        <item name="bg">@color/light_background</item>
-        <item name="fg">@color/black</item>
+    <style name="Theme.MusicDefault" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="android:statusBarColor">?attr/card_alt</item>
+        <item name="android:navigationBarColor">?attr/card_alt</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
+        <item name="bg">@color/material_dynamic_neutral_variant95</item>
+        <item name="fg">@color/material_dynamic_neutral30</item>
+        <item name="fg_disabled">@color/material_dynamic_neutral_variant30</item>
+        <item name="fg_accent">@color/material_dynamic_primary60</item>
+        <item name="fg_accent2">@color/material_dynamic_primary60</item>
         <item name="borders">@color/light_border</item>
-        <item name="card">@color/light_card</item>
+        <item name="card">@color/material_dynamic_neutral_variant95</item>
+        <item name="card_alt">@color/material_dynamic_neutral_variant90</item>
         <item name="cardborder">@color/light_card_border</item>
         <item name="fg_alpha">@color/black</item>
         <!-- Customize your theme here. -->
@@ -24,4 +23,6 @@
         <item name="android:windowBackground">?attr/bg</item>
         <item name="android:textColorPrimary">?attr/fg</item>
     </style>
+
+    <style name="Theme.Music" parent="Theme.Music"></style>
 </resources>

@@ -34,7 +34,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:tint="@color/bottomnav_selector"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
+                app:srcCompat="@drawable/launcher_fg" />
 
             <TextView
                 android:id="@+id/item_title"

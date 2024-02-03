@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Music" parent="Theme.MusicDefault">
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/launcher_fg_dynamic</item>
+        <item name="android:windowSplashScreenBackground">?attr/card_alt</item>
+    </style>
+</resources>
