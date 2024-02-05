@@ -3,12 +3,14 @@ package com.opau.music;
 import static android.service.notification.Condition.SCHEME;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -22,9 +24,10 @@ public class PermissionAlert extends AppCompatActivity {
         setContentView(R.layout.activity_permission_alert);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     public void startRequest(View v) {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 10);
+        if (shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_AUDIO)) {
+            requestPermissions(new String[]{Manifest.permission.READ_MEDIA_AUDIO}, 10);
         } else {
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -42,7 +45,7 @@ public class PermissionAlert extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(Manifest.permission.READ_MEDIA_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             Intent i = new Intent(this, MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);

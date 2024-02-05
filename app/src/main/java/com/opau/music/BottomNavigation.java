@@ -54,6 +54,11 @@ public class BottomNavigation extends LinearLayout {
 
         for (int i = 0; i < m.size(); i++) {
             MenuItem itm = m.getItem(i);
+
+            if (!itm.isVisible()) {
+                continue;
+            }
+
             View v = inflate(getContext(), R.layout.menu_item_layout, null);
 
             LinearLayout button = v.findViewById(R.id.button_layout);

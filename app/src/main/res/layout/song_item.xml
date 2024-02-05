@@ -30,7 +30,7 @@
         android:paddingHorizontal="15dp">
 
         <TextView
-            android:id="@+id/song_title"
+            android:id="@+id/songItemTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
@@ -40,7 +40,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/song_artist"
+            android:id="@+id/songItemSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"

@@ -82,10 +82,11 @@ public class SongsFragment extends Fragment {
     }
 
     void getSongList() {
+
         /*
         //lv.setAdapter();
 
-        String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION};
+        String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST_ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION};
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = getContext().getContentResolver().query(musicUri, projection, MediaStore.Audio.Media.IS_MUSIC + " != 0", null, "TITLE ASC");
         ArrayList<Song> songs = new ArrayList<>();
@@ -121,55 +122,7 @@ public class SongsFragment extends Fragment {
         TextView sc = v.findViewById(R.id.songCount);
         sc.setText(getResources().getQuantityString(R.plurals.song_count, songs.size(), songs.size()));
         */
-
-        RecyclerView rc = (RecyclerView) v.findViewById(R.id.songlist);
-        rc.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        rc.setAdapter(new RecyclerViewAdapter());
     }
 
-    class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.SongViewHolder> {
-        @NonNull
-        @Override
-        public SongViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_item, parent, false);
-            return new SongViewHolder(v);
-        }
 
-        @Override
-        public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return 22;
-        }
-
-        public class SongViewHolder extends RecyclerView.ViewHolder {
-
-            public SongViewHolder(@NonNull View itemView) {
-                super(itemView);
-            }
-        }
-    }
-
-    String formatMsDuration(String duration) {
-        int d = Integer.parseInt(duration);
-
-        int all_sec = Math.round(d / 1000);
-        int all_m = all_sec / 60;
-        all_sec -= (all_m*60);
-
-        String formatted_min = String.valueOf(all_m);
-        if (all_m < 10) {
-            formatted_min = "0" + formatted_min;
-        }
-
-        String formatted_sec = String.valueOf(all_sec);
-        if (all_sec < 10) {
-            formatted_sec = "0" + formatted_sec;
-        }
-
-        return formatted_min + ":" + formatted_sec;
-    };
 }

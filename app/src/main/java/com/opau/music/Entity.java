@@ -3,23 +3,37 @@ package com.opau.music;
 import android.net.Uri;
 
 public class Entity {
-    public long id;
-    public String title;
-    public String artist;
-    public String album;
-    public String duration;
-    public Uri albumart;
-
-    public String getTitle() {
-        return title;
+    private Type entityType;
+    private Object data;
+    public Entity() {
+    }
+    public String getLabel() {
+        switch (entityType) {
+            case SONG:
+                return ((SongData)data).title;
+            case ALBUM:
+                return ((AlbumData)data).title;
+            case ARTIST:
+                return ((ArtistData)data).name;
+        }
+        return "-";
     }
 
-    public Entity(long id, String title, String album, String artist, Uri art, String duration) {
-        this.id = id;
-        this.title = title;
-        this.artist = artist;
-        this.albumart = art;
-        this.album = album;
-        this.duration = duration;
+    public void setData(Object data) {
+        this.data = data;
     }
+
+    public void setEntityType(Type entityType) {
+        this.entityType = entityType;
+    }
+
+    public Type getEntityType() {
+        return entityType;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public enum Type {SONG,ARTIST,ALBUM,PLAYLIST}
 }
