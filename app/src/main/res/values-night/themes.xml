@@ -10,6 +10,7 @@
         <item name="bg">@color/material_dynamic_neutral10</item>
         <item name="fg">@color/material_dynamic_neutral90</item>
         <item name="fg_disabled">@color/material_dynamic_neutral60</item>
+        <item name="fg_disabled2">@color/material_dynamic_neutral_variant30</item>
         <item name="fg_accent">@color/material_dynamic_primary70</item>
         <item name="fg_accent2">@color/material_dynamic_primary60</item>
         <item name="borders">@color/material_dynamic_neutral20</item>
@@ -22,4 +23,6 @@
         <item name="android:windowBackground">?attr/bg</item>
         <item name="android:textColorPrimary">?attr/fg</item>
     </style>
+
+    <style name="AlertDialogStyle" parent="Theme.Material3.DayNight.Dialog.Alert"></style>
 </resources>

@@ -7,9 +7,10 @@
     <attr name="bg" format="color"/>
     <attr name="fg" format="color"/>
     <attr name="fg_disabled" format="color"/>
+    <attr name="fg_disabled2" format="color"/>
     <attr name="fg_accent" format="color"/>
     <attr name="fg_accent2" format="color"/>
-    <attr name="fg_alpha" format="color"></attr>
+    <attr name="fg_alpha" format="color"/>
     <attr name="borders" format="color"/>
     <attr name="card" format="color"/>
     <attr name="card_alt" format="color"/>

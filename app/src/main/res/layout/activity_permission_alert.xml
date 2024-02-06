@@ -6,33 +6,13 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="25dp"
     tools:context=".PermissionAlert">
 
-    <ImageView
-        android:id="@+id/imageView"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        app:srcCompat="@drawable/launcher_fg_dynamic" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:text="Allow Music to access your device's storage"
-        android:textAlignment="center"
-        android:textColor="?attr/fg"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Music needs access to the storage to update the music library and play songs on the device."
-        android:textAlignment="center"
-        android:textColor="?attr/fg" />
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/button"
@@ -40,6 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:onClick="startRequest"
-        android:text="Allow access" />
+        android:text="Allow" />
 
 </LinearLayout>

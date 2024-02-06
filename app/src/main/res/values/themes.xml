@@ -11,6 +11,7 @@
         <item name="bg">@color/material_dynamic_neutral_variant95</item>
         <item name="fg">@color/material_dynamic_neutral30</item>
         <item name="fg_disabled">@color/material_dynamic_neutral_variant30</item>
+        <item name="fg_disabled2">@color/material_dynamic_neutral_variant70</item>
         <item name="fg_accent">@color/material_dynamic_primary60</item>
         <item name="fg_accent2">@color/material_dynamic_primary60</item>
         <item name="borders">@color/light_border</item>

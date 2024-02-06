@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">Music</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <plurals name="song_count">
         <item quantity="one">%d song</item>
         <item quantity="other">%d songs</item>
     </plurals>
+    <string name="permission_audio_file_title">Allow Music to access audio files on this device</string>
+    <string name="permission_audio_file_explain">The application needs this permission to find and play songs on the device.</string>
+    <string name="permission_notifications_title">Allow Music to send notifications</string>
+    <string name="permission_notifications_explain">This permission is required to show the current song in the Quick Settings panel.</string>
 </resources>

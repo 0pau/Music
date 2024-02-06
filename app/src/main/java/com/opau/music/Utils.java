@@ -5,9 +5,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 public class Utils {
-    public static String formatMsDuration(String duration) {
-        int d = Integer.parseInt(duration);
-        int all_sec = d / 1000;
+    public static String formatMsDuration(long duration) {
+        int all_sec = (int)duration / 1000;
         int all_m = all_sec / 60;
         all_sec -= (all_m*60);
 

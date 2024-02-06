@@ -27,7 +27,6 @@ public class PlaybackCoordinator {
         player = new ExoPlayer.Builder(context).build();
         libraryManager = lm;
         player.addListener(new Player.Listener() {
-
             @Override
             public void onPlaybackStateChanged(int playbackState) {
                 Player.Listener.super.onPlaybackStateChanged(playbackState);
@@ -113,13 +112,6 @@ public class PlaybackCoordinator {
 
     public void addEventListener(PlaybackCoordinatorEventListener l) {
         listeners.add(l);
-    }
-
-    public interface PlaybackCoordinatorEventListener {
-        void onTrackStarted(long track_id);
-        void onPlayBackError();
-        void onPlayListFinished();
-        void onPlayStateChanged(boolean isPlaying);
     }
 
     public boolean pcCanPlayNext() {

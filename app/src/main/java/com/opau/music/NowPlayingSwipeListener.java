@@ -57,12 +57,13 @@ public class NowPlayingSwipeListener implements View.OnTouchListener {
             view.getLayoutTransition().disableTransitionType(LayoutTransition.CHANGING);
             if (distanceY > 0 && !expanded) {
                 view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, view.getHeight()+(int)distanceY));
+                maxDistance++;
             }
             if (distanceY < 0 && expanded) {
                 view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, view.getHeight()+(int)distanceY));
                 content.setAlpha(content.getAlpha()-0.1f);
+                maxDistance++;
             }
-            maxDistance = Math.abs((int)distanceY);
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
 
@@ -80,13 +81,12 @@ public class NowPlayingSwipeListener implements View.OnTouchListener {
         }
 
 
-
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             try {
-                if (velocityY > 7000 && expanded) {
+                if ((velocityY > 7000 || maxDistance>10) && expanded) {
                     collapse();
-                } else if (velocityY < -7000 && !expanded) {
+                } else if ((velocityY < -7000 || maxDistance>10) && !expanded) {
                     expand();
                 } else {
                     if (expanded) {
@@ -95,10 +95,8 @@ public class NowPlayingSwipeListener implements View.OnTouchListener {
                         collapse();
                     }
                 }
-
+                maxDistance=0;
                 parent.nowPlayingExpanded = expanded;
-
-
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -114,7 +112,7 @@ public class NowPlayingSwipeListener implements View.OnTouchListener {
         content.setVisibility(View.VISIBLE);
         content.animate().setDuration(300).alpha(1f).start();
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.weight = 1;
+        lp.weight = -1;
         parent.findViewById(R.id.nav).setLayoutParams(lp);
     }
 

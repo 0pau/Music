@@ -20,6 +20,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,11 +42,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (!Permissions.checkPermissions(this)) {
             Intent i = new Intent(this, PermissionAlert.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
+            return;
         }
 
         Intent svc=new Intent(this, MusicService.class);
@@ -91,21 +93,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void setupPcListener() {
-        getPlaybackCoordinator().addEventListener(new PlaybackCoordinator.PlaybackCoordinatorEventListener() {
+        getPlaybackCoordinator().addEventListener(new PlaybackCoordinatorEventListener() {
             @Override
             public void onTrackStarted(long track_id) {
                 updateSongInfo();
                 showNowPlayingPanel();
-            }
-
-            @Override
-            public void onPlayBackError() {
-
-            }
-
-            @Override
-            public void onPlayListFinished() {
-
             }
 
             @Override
@@ -165,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             FrameLayout contentFrame = findViewById(R.id.contentFrame);
             ValueAnimator paddingAnim = ValueAnimator.ofInt(0, panelHeight);
             paddingAnim.addUpdateListener((va) -> {
-                contentFrame.setPadding(0, 0, 0, (int) va.getAnimatedValue());
+                contentFrame.setPadding(0, contentFrame.getPaddingTop(), 0, (int) va.getAnimatedValue());
             });
             paddingAnim.setDuration(350).setInterpolator(Interpolators.easeOut);
             paddingAnim.start();

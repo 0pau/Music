@@ -48,15 +48,10 @@ public class MusicService extends Service {
 
         pc = new PlaybackCoordinator(this, libraryManager);
         ((App)getApplication()).setPlaybackCoordinator(pc);
-        pc.addEventListener(new PlaybackCoordinator.PlaybackCoordinatorEventListener() {
+        pc.addEventListener(new PlaybackCoordinatorEventListener() {
             @Override
             public void onTrackStarted(long track_id) {
                 updatePlayerMetadata();
-            }
-
-            @Override
-            public void onPlayBackError() {
-
             }
 
             @Override
