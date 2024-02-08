@@ -12,12 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.animation.ValueAnimator;
 import androidx.fragment.app.FragmentManager;
+
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.util.Size;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -28,6 +36,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.window.OnBackInvokedDispatcher;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -52,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
         Intent svc=new Intent(this, MusicService.class);
         startService(svc);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         View loadIndicator = getLayoutInflater().inflate(R.layout.library_load_pb, null);
         loadIndicator.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -83,9 +95,22 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.fragmentContainerView, fragment);
         fragmentTransaction.commit();
 
+        setWindowInsets(nav, fragment);
+
         LinearLayout nowPlayingPanel = findViewById(R.id.nowPlayingPanel);
         swiper = new NowPlayingSwipeListener(this, nowPlayingPanel, findViewById(R.id.fragmentContainerView), findViewById(R.id.nowPlayingHead), this);
         nowPlayingPanel.setOnTouchListener(swiper);
+    }
+
+    void setWindowInsets(BottomNavigation nav, PlayerControlsFragment playerControlsFragment) {
+        int navId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
+        int navbarSize = getResources().getDimensionPixelSize(navId);
+        nav.setPaddingToScreen(navbarSize);
+        playerControlsFragment.navbarPadding = navbarSize;
+        int statusBarId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int statusBarSize = getResources().getDimensionPixelSize(statusBarId);
+        findViewById(R.id.toolbarContainer).setPadding(0,statusBarSize,0,0);
+        playerControlsFragment.statusBarPadding = statusBarSize;
     }
 
     PlaybackCoordinator getPlaybackCoordinator() {
@@ -170,21 +195,20 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Entity> entities = new ArrayList<>();
         @NonNull
         @Override
-        public SongViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public SongViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_item, parent, false);
-            return new SongViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
-            View v = holder.itemView;
-
             switch (entities.get(position).getEntityType()) {
                 case SONG:
                     SongData sd = (SongData) entities.get(position).getData();
                     ArtistData ad = (ArtistData) ((App)getApplication()).getLibraryManager().getEntityForId(Entity.Type.ARTIST, sd.artistID).getData();
                     ((TextView)v.findViewById(R.id.songItemTitle)).setText(sd.title);
-                    ((TextView)v.findViewById(R.id.songItemSubtitle)).setText(ad.name);
+                    ((TextView)v.findViewById(R.id.songItemSubtitle)).setText(ad.name +" • "+ Utils.formatMsDuration(sd.duration));
+                    AlbumData ald = (AlbumData) ((App)getApplication()).getLibraryManager().getEntityForId(Entity.Type.ALBUM, sd.albumID).getData();
+                    try {
+                        ((ImageView)v.findViewById(R.id.albumArt)).setImageBitmap(((App)getApplication()).getLibraryManager().getAlbumArtThumbnail(64, ald.id));
+                    } catch (IOException e) {
+                        Log.e("SongList", "Couldn't find art.");
+                    }
                     v.setTag(position);
                     v.setOnClickListener((e)->{
                         ArrayList<Long> queue = new ArrayList<>();
@@ -195,6 +219,12 @@ public class MainActivity extends AppCompatActivity {
                     });
                     break;
             }
+            return new SongViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
+            View v = holder.itemView;
         }
 
         public void refresh() {
@@ -217,6 +247,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return entities.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
         }
 
         public class SongViewHolder extends RecyclerView.ViewHolder {

@@ -7,7 +7,7 @@
     </item>
     <item android:state_pressed="true">
         <shape android:shape="oval">
-            <solid android:color="?attr/fg_disabled2"></solid>
+            <solid android:color="?attr/playerControlsFragmentFg"></solid>
         </shape>
     </item>
 </selector>

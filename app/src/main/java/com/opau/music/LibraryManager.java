@@ -1,14 +1,18 @@
 package com.opau.music;
 
 import android.annotation.SuppressLint;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Size;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class LibraryManager {
@@ -60,6 +64,7 @@ public class LibraryManager {
     public void updateLibrary() {
         updateSongs();
         updateArtists();
+        updateAlbums();
     }
 
     @SuppressLint("Range")
@@ -146,6 +151,47 @@ public class LibraryManager {
         c.close();
     }
 
+    void updateAlbums() {
+        int newAlbums = 0;
+        Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
+        ContentValues updaterValues = new ContentValues();
+        updaterValues.put("valid", 0);
+        db.update("albums", updaterValues, null, null);
+        String[] projection = {MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ALBUM};
+        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Cursor c = context.getContentResolver().query(musicUri, projection, MediaStore.Audio.Media.IS_MUSIC + "!= 0", null, "artist_id ASC");
+        if (c == null || !c.moveToFirst()) {
+            return;
+        }
+        ArrayList<Long> ids = new ArrayList<>();
+        do {
+            long id = c.getLong(0);
+            if (!ids.contains(id)) {
+                ids.add(id);
+            } else {
+                continue;
+            }
+            ContentValues cv = new ContentValues();
+            cv.put("id", id);
+            cv.put("valid", 1);
+            cv.put("title", c.getString(1));
+            Uri art_path = ContentUris.withAppendedId(artworkUri, id);
+            cv.put("albumArtUri", art_path.toString());
+
+            if (isEntityInLibrary(Entity.Type.ALBUM, id)) {
+                db.update("albums", cv, "id =" + id, null);
+            } else {
+                db.insert("albums", null, cv);
+                newAlbums++;
+            }
+
+        } while (c.moveToNext());
+        int deleted = db.delete("albums", "valid = 0", null);
+        Log.i("LM/Albums", newAlbums + " added, " + deleted + " deleted.");
+
+        c.close();
+    }
+
     @SuppressLint("Range")
     public Entity getEntityForId(Entity.Type type, long id) {
         Entity e = new Entity();
@@ -177,6 +223,18 @@ public class LibraryManager {
                 }
                 c.close();
                 break;
+            case ALBUM:
+                c = db.rawQuery("SELECT id, title,albumArtUri FROM albums WHERE id = " + id, null);
+                if (c.moveToFirst()) {
+                    e.setEntityType(Entity.Type.ALBUM);
+                    AlbumData ad = new AlbumData();
+                    ad.id = c.getLong(0);
+                    ad.title = c.getString(1);
+                    ad.albumArtUri = Uri.parse(c.getString(2));
+                    e.setData(ad);
+                }
+                c.close();
+                break;
         }
         return e;
     }
@@ -184,5 +242,23 @@ public class LibraryManager {
     public String getArtistNameForSongId(long id) {
         Entity e = getEntityForId(Entity.Type.ARTIST,((SongData)getEntityForId(Entity.Type.SONG, id).getData()).artistID);
         return ((ArtistData)e.getData()).name;
+    }
+
+    public String getAlbumNameForSongId(long id) {
+        Entity e = getEntityForId(Entity.Type.ALBUM,((SongData)getEntityForId(Entity.Type.SONG, id).getData()).albumID);
+        return ((AlbumData)e.getData()).title;
+    }
+
+    public Bitmap getAlbumArtThumbnail(int size, long id) throws IOException {
+        Uri contentUri = ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, id);
+        return context.getContentResolver().loadThumbnail(contentUri, new Size(size,size), null);
+    }
+
+    public Bitmap getAlbumArt(long id) throws IOException {
+        return getAlbumArtThumbnail(512, id);
+    }
+
+    public Uri getAlbumArtUri(long id) {
+        return ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, id);
     }
 }

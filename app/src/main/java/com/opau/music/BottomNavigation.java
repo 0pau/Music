@@ -86,6 +86,13 @@ public class BottomNavigation extends LinearLayout {
         a.recycle();
     }
 
+    public void setPaddingToScreen(int p) {
+        int p1 = layout.getPaddingTop();
+        LayoutParams myParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layout.setPadding(p1,p1,p1,p1+p);
+        layout.setLayoutParams(myParams);
+    }
+
     @SuppressLint("ResourceType")
     @Override
     protected void onAttachedToWindow() {

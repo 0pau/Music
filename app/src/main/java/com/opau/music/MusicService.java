@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadata;
 import android.media.MediaPlayer;
@@ -127,18 +128,25 @@ public class MusicService extends Service {
         ms.setPlaybackState(stateBuilder.build());
     }
 
-    void updatePlayerMetadata() {
+    void updatePlayerMetadata()  {
         ms.setActive(true);
         SongData sd = pc.getCurrentlyPlaying();
 
+        Bitmap art = BitmapFactory.decodeResource(getResources(), R.drawable.unknown);
+
+        try {
+            art = libraryManager.getAlbumArt(sd.albumID);
+        } catch (IOException e) {}
+
         MediaMetadataCompat metadata = new MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE,sd.title)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, sd.title)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, libraryManager.getArtistNameForSongId(sd.id))
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Album")
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, sd.duration)
-                .putBitmap(MediaMetadataCompat.METADATA_KEY_ART, BitmapFactory.decodeResource(getResources(), R.drawable.unknown))
+                .putBitmap(MediaMetadataCompat.METADATA_KEY_ART, art)
                 .build();
         ms.setMetadata(metadata);
+
         updatePlayerState(PlaybackStateCompat.STATE_PLAYING);
         Intent notifyIntent = new Intent(this, MainActivity.class);
         notifyIntent.setAction("android.intent.action.MAIN");

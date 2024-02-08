@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class NowPlayingSwipeListener implements View.OnTouchListener {
+public class NowPlayingSwipeListener implements View.OnTouchListener{
 
     boolean expanded = false;
 
@@ -27,6 +27,7 @@ public class NowPlayingSwipeListener implements View.OnTouchListener {
     View content;
     View head;
     MainActivity parent;
+    boolean flingEventFired = false;
 
     int maxHeight = 500;
     int minHeight = 0;
@@ -48,12 +49,20 @@ public class NowPlayingSwipeListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        if (!flingEventFired && event.getAction() == MotionEvent.ACTION_UP) {
+            if (expanded) {
+                expand();
+            } else {
+                collapse();
+            }
+        }
         return gestureDetector.onTouchEvent(event);
     }
 
     private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onScroll(@Nullable MotionEvent e1, @NonNull MotionEvent e2, float distanceX, float distanceY) {
+            flingEventFired = false;
             view.getLayoutTransition().disableTransitionType(LayoutTransition.CHANGING);
             if (distanceY > 0 && !expanded) {
                 view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, view.getHeight()+(int)distanceY));
@@ -83,6 +92,7 @@ public class NowPlayingSwipeListener implements View.OnTouchListener {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            flingEventFired = true;
             try {
                 if ((velocityY > 7000 || maxDistance>10) && expanded) {
                     collapse();

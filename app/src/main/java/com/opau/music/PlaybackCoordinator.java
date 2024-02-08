@@ -5,11 +5,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
 import androidx.media3.exoplayer.ExoPlayer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PlaybackCoordinator {
     private int position = -1;
@@ -31,11 +33,7 @@ public class PlaybackCoordinator {
             public void onPlaybackStateChanged(int playbackState) {
                 Player.Listener.super.onPlaybackStateChanged(playbackState);
                 if (playbackState == ExoPlayer.STATE_ENDED) {
-                    if (canPlayNext) {
-                        playNext(1);
-                    } else {
-                        playlistFinish();
-                    }
+                    tryToGoNext();
                 }
             }
 
@@ -47,6 +45,14 @@ public class PlaybackCoordinator {
                 }
             }
         });
+    }
+
+    private void tryToGoNext() {
+        if (canPlayNext) {
+            playNext(1);
+        } else {
+            playlistFinish();
+        }
     }
 
     private void playlistFinish() {
@@ -87,7 +93,8 @@ public class PlaybackCoordinator {
         }
         Entity next = libraryManager.getEntityForId(Entity.Type.SONG, queue.get(position));
         String path = ((SongData)next.getData()).path;
-        player.setMediaItem(MediaItem.fromUri(path));
+        MediaItem mi = MediaItem.fromUri(path);
+        player.setMediaItem(mi);
         player.prepare();
         playTrack();
     }
@@ -129,5 +136,45 @@ public class PlaybackCoordinator {
     public SongData getCurrentlyPlaying() {
         Entity song = libraryManager.getEntityForId(Entity.Type.SONG, queue.get(position));
         return ((SongData) song.getData());
+    }
+    public SongData getNext() {
+        if (!canPlayNext) {
+            return null;
+        }
+        Entity song = libraryManager.getEntityForId(Entity.Type.SONG, queue.get(position+1));
+        return ((SongData) song.getData());
+    }
+
+    public void jumpTo(int index) {
+        position = index-1;
+        playNext(1);
+    }
+
+    public ArrayList<Long> getCurrentPlaylist() {
+        return queue;
+    }
+
+    public int getCurrentIndex() {
+        return position;
+    }
+
+    public long getCurrentId() {
+        return queue.get(position);
+    }
+
+    public void removeAt(int index) {
+        queue.remove(index);
+        if (index == position) {
+            position--;
+            tryToGoNext();
+        }
+    }
+
+    public int getPlaylistLength() {
+        return queue.size();
+    }
+
+    public void swap(int p1, int p2) {
+        Collections.swap(queue, p1, p2);
     }
 }

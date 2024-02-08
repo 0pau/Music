@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:height="7.5dp">
+        <shape android:shape="rectangle">
+            <solid android:color="?attr/playerControlsFragmentFgStrong"></solid>
+            <corners android:radius="7.5dp"></corners>
+        </shape>
+    </item>
+    <item android:gravity="center_vertical" android:height="7.5dp">
+        <scale android:scaleWidth="100%">
+            <selector>
+                <item>
+                    <shape android:shape="rectangle">
+                        <solid android:color="?attr/playerControlsFragmentFgVeryStrong"></solid>
+                        <corners android:radius="7.5dp"></corners>
+                    </shape>
+                </item>
+            </selector>
+        </scale>
+    </item>
+</layer-list>

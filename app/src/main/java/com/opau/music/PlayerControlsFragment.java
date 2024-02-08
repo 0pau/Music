@@ -1,11 +1,20 @@
 package com.opau.music;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.media.AudioManager;
 import android.media.MediaRouter;
 import android.os.Bundle;
 
+import androidx.annotation.ColorInt;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -14,9 +23,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.google.android.material.color.DynamicColors;
+import com.google.android.material.color.DynamicColorsOptions;
+
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +51,8 @@ public class PlayerControlsFragment extends Fragment {
     private String mParam2;
     private View v;
     private boolean needsUpdate = false;
+    public int navbarPadding = 0;
+    public int statusBarPadding = 0;
 
     public PlayerControlsFragment() {
         // Required empty public constructor
@@ -62,6 +80,10 @@ public class PlayerControlsFragment extends Fragment {
         return ((App)getActivity().getApplication()).getPlaybackCoordinator();
     }
 
+    LibraryManager getLibraryManager() {
+        return ((App)getActivity().getApplication()).getLibraryManager();
+    }
+
     void update() {
         Handler h = new Handler(Looper.getMainLooper());
         h.postDelayed(()->{
@@ -84,6 +106,7 @@ public class PlayerControlsFragment extends Fragment {
         Handler delay = new Handler(Looper.getMainLooper());
         delay.postDelayed(()->{
             getPlaybackCoordinator().addEventListener(new PlaybackCoordinatorEventListener() {
+                @SuppressLint("RestrictedApi")
                 @Override
                 public void onTrackStarted(long track_id) {
                     LibraryManager lm = ((App)getActivity().getApplication()).getLibraryManager();
@@ -92,6 +115,32 @@ public class PlayerControlsFragment extends Fragment {
                     ((TextView)v.findViewById(R.id.playerFragmentSubtitle)).setText(lm.getArtistNameForSongId(track_id));
                     ((TextView)v.findViewById(R.id.nowPlayingTrackTotal)).setText(Utils.formatMsDuration(sd.duration));
                     ((SeekBar)v.findViewById(R.id.seekBar)).setMax((int)sd.duration);
+
+                    SongData sdNext = getPlaybackCoordinator().getNext();
+                    if (sdNext != null) {
+                        ((TextView)v.findViewById(R.id.nextSongTitle)).setText(sdNext.title);
+                        ((TextView)v.findViewById(R.id.nextSongArtist)).setText(lm.getArtistNameForSongId(sdNext.id));
+                    }
+                    ImageView art = v.findViewById(R.id.nextSongArt);
+
+                    Bitmap artBitmap = null;
+                    Bitmap artNext = null;
+                    try {
+                        artBitmap = getLibraryManager().getAlbumArt(sd.albumID);
+                    } catch (IOException e) {
+
+                    }
+                    try {
+                        artNext = getLibraryManager().getAlbumArt(sdNext.albumID);
+                    } catch (IOException e) {}
+
+                    changeCovers(artBitmap);
+                    if (artNext == null) {
+                        art.setImageResource(R.drawable.unknown);
+                    } else {
+                        art.setImageBitmap(artNext);
+                    }
+
                 }
 
                 @Override
@@ -125,6 +174,30 @@ public class PlayerControlsFragment extends Fragment {
         },100);
     }
 
+    void changeCovers(Bitmap bmp) {
+        ImageView art = v.findViewById(R.id.playerFragmentArt);
+        ImageView im = v.findViewById(R.id.backdrop);
+
+        Drawable d2 = null;
+        if (bmp == null) {
+            //d2 = getResources().getDrawable(R.drawable.launcher_bg, getActivity().getTheme());
+            im.setImageResource(R.drawable.launcher_bg);
+            art.setImageResource(R.drawable.unknown);
+            return;
+        } else {
+            d2 = new BitmapDrawable(getResources(), bmp);
+        }
+
+        Drawable[] images = new Drawable[]{im.getDrawable(), d2};
+        TransitionDrawable transition = new TransitionDrawable(images);
+        TransitionDrawable transition2 = new TransitionDrawable(images);
+        im.setImageDrawable(transition);
+        art.setImageDrawable(transition2);
+        transition.startTransition(500);
+        transition2.startTransition(500);
+
+    }
+
     public void pp(View a) {
         if (getPlaybackCoordinator().isPlaying()) {
             getPlaybackCoordinator().pause();
@@ -142,22 +215,14 @@ public class PlayerControlsFragment extends Fragment {
     }
 
     public void showMediaRouter(View v) {
-
         MediaRouterDialog dialog = new MediaRouterDialog(getActivity());
         dialog.show();
-        /*
-        MediaRouter mr = (MediaRouter)getActivity().getSystemService(Context.MEDIA_ROUTER_SERVICE);
-        //Log.i("mediaRoute", (String) mr.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_AUDIO).getName());
-        for (int i = 0; i < mr.getRouteCount(); i++) {
-            Log.i("mediaRoute", (String) mr.getRouteAt(i).getName());
-        }
 
-        MediaRouteSelector mediaRouteSelector = new MediaRouteSelector.Builder()
-                .addControlCategory(MediaControlIntent.CATEGORY_LIVE_AUDIO).build();
+    }
 
-        MediaRouteControllerDialog dialog = new MediaRouteControllerDialog(getContext());
-        dialog.show();*/
-
+    public void showPlaylistSheet(View v) {
+        PlaylistDialog pd = new PlaylistDialog(getActivity(), getPlaybackCoordinator());
+        pd.show();
     }
 
     @Override
@@ -168,6 +233,10 @@ public class PlayerControlsFragment extends Fragment {
         v.findViewById(R.id.playerFragmentPrevious).setOnClickListener(this::skipPrevious);
         v.findViewById(R.id.playerFragmentNext).setOnClickListener(this::skipNext);
         v.findViewById(R.id.mediaRouterButton).setOnClickListener(this::showMediaRouter);
+        v.findViewById(R.id.nextCard).setOnClickListener(this::showPlaylistSheet);
+        RenderEffect re = RenderEffect.createBlurEffect(200f,200f, Shader.TileMode.DECAL);
+        ((ImageView)v.findViewById(R.id.backdrop)).setRenderEffect(re);
+        v.findViewById(R.id.fragmentFrame).setPadding(0,statusBarPadding,0,navbarPadding);
         return v;
     }
 }

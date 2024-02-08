@@ -19,34 +19,50 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:animateLayoutChanges="false">
+            android:animateLayoutChanges="false"
+            android:fitsSystemWindows="true">
 
             <FrameLayout
                 android:id="@+id/contentFrame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar2"
-                    style="@style/ToolBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?android:attr/actionBarSize"
-                    android:layout_weight="0"
-                    android:minHeight="?attr/actionBarSize"
-                    android:paddingEnd="5dp"
-                    app:menu="@menu/main_top"
-                    app:subtitle="There are no songs."
-                    app:titleMargin="0dp"
-                    custom:title="Music library"
-                    custom:titleTextAppearance="@style/TextAppearance.AppCompat.Medium"
-                    custom:titleTextColor="?attr/fg" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/contentRecycler"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="?android:attr/actionBarSize"
-                    android:layout_weight="1" />
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/toolbarContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:background="?attr/card_alt"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.Toolbar
+                            android:id="@+id/toolbar2"
+                            style="@style/ToolBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="?android:attr/actionBarSize"
+                            android:layout_weight="0"
+                            android:background="@color/transparent"
+                            android:minHeight="?attr/actionBarSize"
+                            android:paddingEnd="5dp"
+                            app:menu="@menu/main_top"
+                            app:subtitle="There are no songs."
+                            app:titleMargin="0dp"
+                            custom:title="Music library"
+                            custom:titleTextAppearance="@style/TextAppearance.AppCompat.Medium"
+                            custom:titleTextColor="?attr/fg" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/contentRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -101,20 +117,14 @@
                             android:orientation="horizontal"
                             android:paddingHorizontal="15dp">
 
-                            <androidx.cardview.widget.CardView
+                            <ImageView
+                                android:id="@+id/albumArt"
                                 android:layout_width="45dp"
                                 android:layout_height="45dp"
-                                custom:cardCornerRadius="10dp"
-                                custom:cardElevation="0dp">
-
-                                <ImageView
-                                    android:id="@+id/albumArt"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:scaleType="centerCrop"
-                                    custom:srcCompat="@drawable/unknown" />
-
-                            </androidx.cardview.widget.CardView>
+                                android:background="@drawable/cover_clip_small"
+                                android:clipToOutline="true"
+                                android:scaleType="centerCrop"
+                                custom:srcCompat="@drawable/unknown" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -146,9 +156,9 @@
                             android:layout_width="37dp"
                             android:layout_height="37dp"
                             android:layout_weight="0"
+                            android:background="@drawable/circle_button_bg2"
                             android:clickable="true"
                             android:clipToOutline="true"
-                            android:foreground="?android:attr/selectableItemBackground"
                             android:onClick="pp"
                             android:padding="5dp"
                             app:srcCompat="@drawable/play_arrow"

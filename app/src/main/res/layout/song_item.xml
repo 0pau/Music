@@ -3,29 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:paddingHorizontal="15dp"
-    android:paddingVertical="10dp">
+    android:paddingVertical="15dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp">
-
-        <ImageView
-            android:id="@+id/albumArt"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/unknown" />
-    </androidx.cardview.widget.CardView>
+    <ImageView
+        android:id="@+id/albumArt"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="@drawable/cover_clip_small"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/unknown" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:paddingHorizontal="15dp">
 
@@ -33,7 +30,9 @@
             android:id="@+id/songItemTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
             android:text="Title"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="?attr/fg"
@@ -49,4 +48,15 @@
             android:textColor="?attr/fg_disabled"
             android:textSize="15sp" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/playingIndicator"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_weight="0"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:srcCompat="@drawable/play_arrow"
+        app:tint="?attr/fg_accent2" />
 </LinearLayout>

@@ -7,6 +7,8 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
 
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
         <item name="bg">@color/material_dynamic_neutral10</item>
         <item name="fg">@color/material_dynamic_neutral90</item>
         <item name="fg_disabled">@color/material_dynamic_neutral60</item>
@@ -18,6 +20,10 @@
         <item name="card_alt">@color/material_dynamic_neutral_variant20</item>
         <item name="cardborder">@color/dark_card</item>
         <item name="fg_alpha">@color/white_alpha</item>
+        <item name="playerControlsFragmentFg">#15FFFFFF</item>
+        <item name="playerControlsFragmentFgStrong">#35FFFFFF</item>
+        <item name="playerControlsFragmentFgVeryStrong">#60FFFFFF</item>
+        <item name="playerControlsFragmentFgVeryStrong2">#90FFFFFF</item>
         <!-- Customize your theme here. -->
 
         <item name="android:windowBackground">?attr/bg</item>

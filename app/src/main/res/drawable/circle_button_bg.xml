@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector android:enterFadeDuration="250" android:exitFadeDuration="250" xmlns:android="http://schemas.android.com/apk/res/android">
+<selector android:enterFadeDuration="50" android:exitFadeDuration="50" xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="false">
         <shape android:shape="oval">
-            <solid android:color="?attr/card"></solid>
+            <solid android:color="?attr/playerControlsFragmentFg"></solid>
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="oval">
-            <solid android:color="?attr/fg_accent2"></solid>
+            <solid android:color="?attr/playerControlsFragmentFgStrong"></solid>
         </shape>
     </item>
 </selector>

@@ -15,4 +15,8 @@
     <attr name="card" format="color"/>
     <attr name="card_alt" format="color"/>
     <attr name="cardborder" format="color"/>
+    <attr name="playerControlsFragmentFg" format="color"/>
+    <attr name="playerControlsFragmentFgStrong" format="color"/>
+    <attr name="playerControlsFragmentFgVeryStrong" format="color"/>
+    <attr name="playerControlsFragmentFgVeryStrong2" format="color"/>
 </resources>
