@@ -49,10 +49,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-
-    Entity.Type currentView = Entity.Type.SONG;
-    public boolean nowPlayingExpanded = false;
-    NowPlayingSwipeListener swiper;
+    NowPlayingSwipeListener2 swiper;
     HomeScreenAdapter homeScreenAdapter;
 
     @Override
@@ -86,14 +83,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        /*
-        RecyclerView rc = findViewById(R.id.contentRecycler);
-        rc.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter();
-        rc.setAdapter(adapter);*/
-
         BottomNavigation nav = findViewById(R.id.nav);
-
 
         Thread updateRequester = new Thread(){
             @Override
@@ -120,9 +110,6 @@ public class MainActivity extends AppCompatActivity {
         homeScreenAdapter = new HomeScreenAdapter(getSupportFragmentManager(), getLifecycle());
         ViewPager2 homeViewPager = findViewById(R.id.homeViewPager);
         homeViewPager.setAdapter(homeScreenAdapter);
-
-        //currentView = Entity.Type.values()[itm];
-        //adapter.refresh();
         nav.setOnItemSelectedListener(homeViewPager::setCurrentItem);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -133,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         setWindowInsets(nav, fragment);
 
         LinearLayout nowPlayingPanel = findViewById(R.id.nowPlayingPanel);
-        swiper = new NowPlayingSwipeListener(this, nowPlayingPanel, findViewById(R.id.fragmentContainerView), findViewById(R.id.nowPlayingHead), this);
+        swiper = new NowPlayingSwipeListener2(this, nowPlayingPanel, findViewById(R.id.fragmentContainerView), findViewById(R.id.nowPlayingHead), this);
         nowPlayingPanel.setOnTouchListener(swiper);
         long end = System.currentTimeMillis();
 
@@ -233,83 +220,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return 1;
-        }
-    }
-
-    class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.SongViewHolder> {
-
-        int itmCount = 0;
-        ArrayList<Entity> entities = new ArrayList<>();
-        @NonNull
-        @Override
-        public SongViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_item, parent, false);
-            return new SongViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
-            View v = holder.itemView;
-            v.setOnClickListener(null);
-            v.findViewById(R.id.songItemSubtitle).setVisibility(View.VISIBLE);
-            ((ImageView)v.findViewById(R.id.albumArt)).setImageBitmap(null);
-            switch (entities.get(position).getEntityType()) {
-                case SONG:
-                    SongData sd = (SongData) entities.get(position).getData();
-                    ArtistData ad = (ArtistData) ((App)getApplication()).getLibraryManager().getEntityForId(Entity.Type.ARTIST, sd.artistID).getData();
-                    ((TextView)v.findViewById(R.id.songItemTitle)).setText(sd.title);
-                    ((TextView)v.findViewById(R.id.songItemSubtitle)).setText(ad.name +" • "+ Utils.formatMsDuration(sd.duration));
-                    AlbumData ald = (AlbumData) ((App)getApplication()).getLibraryManager().getEntityForId(Entity.Type.ALBUM, sd.albumID).getData();
-                    try {
-                        ((ImageView)v.findViewById(R.id.albumArt)).setImageBitmap(((App)getApplication()).getLibraryManager().getAlbumArtThumbnail(64, ald.id));
-                    } catch (Exception e) {
-                    }
-                    v.setTag(position);
-                    v.setOnClickListener((e)->{
-                        ArrayList<Long> queue = new ArrayList<>();
-                        for (Entity en: entities) {
-                            queue.add(((SongData)en.getData()).id);
-                        }
-                        getPlaybackCoordinator().queueList(queue, (int)v.getTag());
-                    });
-                    break;
-                case ALBUM:
-                    AlbumData albumData = (AlbumData) entities.get(position).getData();
-                    ((TextView)v.findViewById(R.id.songItemTitle)).setText(albumData.title);
-                    v.findViewById(R.id.songItemSubtitle).setVisibility(View.GONE);
-                    try {
-                        ((ImageView)v.findViewById(R.id.albumArt)).setImageBitmap(((App)getApplication()).getLibraryManager().getAlbumArtThumbnail(64, albumData.id));
-                    } catch (Exception e) {
-                    }
-                    break;
-            }
-        }
-
-        public void refresh() {
-            entities = ((App)getApplication()).getLibraryManager().getEntities(currentView);
-            sort();
-            notifyDataSetChanged();
-        }
-
-        public void sort() {
-            entities.sort(new EntityComparator());
-        }
-
-        @Override
-        public int getItemCount() {
-            return entities.size();
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return position;
-        }
-
-        public class SongViewHolder extends RecyclerView.ViewHolder {
-
-            public SongViewHolder(@NonNull View itemView) {
-                super(itemView);
-            }
         }
     }
 
