@@ -21,7 +21,6 @@ public class App extends Application {
         );
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
-        DynamicColors.applyToActivitiesIfAvailable(this);
         libraryManager = new LibraryManager(this);
         libraryManager.open();
     }

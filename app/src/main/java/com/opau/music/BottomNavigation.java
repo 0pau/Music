@@ -43,7 +43,6 @@ public class BottomNavigation extends LinearLayout {
 
         layout.setOrientation(this.getOrientation());
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.BottomNavigation,0,0);
-
         menu = a.getResourceId(R.styleable.BottomNavigation_menuResource, R.menu.main);
 
         MenuInflater mi = new MenuInflater(context);

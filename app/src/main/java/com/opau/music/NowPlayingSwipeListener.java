@@ -70,7 +70,11 @@ public class NowPlayingSwipeListener implements View.OnTouchListener{
             }
             if (distanceY < 0 && expanded) {
                 view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, view.getHeight()+(int)distanceY));
-                content.setAlpha(content.getAlpha()-0.1f);
+                if (content.getAlpha() != 0) {
+                    content.setAlpha(content.getAlpha()-0.1f);
+                } else {
+                    content.setVisibility(View.GONE);
+                }
                 maxDistance++;
             }
             return super.onScroll(e1, e2, distanceX, distanceY);
@@ -94,9 +98,9 @@ public class NowPlayingSwipeListener implements View.OnTouchListener{
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             flingEventFired = true;
             try {
-                if ((velocityY > 7000 || maxDistance>10) && expanded) {
+                if ((velocityY > 7000 || maxDistance>5) && expanded) {
                     collapse();
-                } else if ((velocityY < -7000 || maxDistance>10) && !expanded) {
+                } else if ((velocityY < -7000 || maxDistance>5) && !expanded) {
                     expand();
                 } else {
                     if (expanded) {

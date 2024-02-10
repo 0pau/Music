@@ -35,7 +35,7 @@
             android:maxLines="1"
             android:text="Title"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="?attr/fg"
+            android:textColor="?attr/mainTextColor"
             android:textSize="16sp" />
 
         <TextView
@@ -45,7 +45,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Artist • 0:00"
-            android:textColor="?attr/fg_disabled"
+            android:textColor="?attr/secondaryTextColor"
             android:textSize="15sp" />
     </LinearLayout>
 
@@ -58,5 +58,5 @@
         android:scaleType="centerCrop"
         android:visibility="gone"
         app:srcCompat="@drawable/play_arrow"
-        app:tint="?attr/fg_accent2" />
+        app:tint="?attr/secondaryBrandColor" />
 </LinearLayout>

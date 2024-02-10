@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -67,6 +68,8 @@ public class PlayerControlsFragment extends Fragment {
      * @return A new instance of fragment PlayerControlsFragment.
      */
     // TODO: Rename and change types and number of parameters
+    TransitionDrawable transition;
+    TransitionDrawable transition2;
     public static PlayerControlsFragment newInstance(String param1, String param2) {
         PlayerControlsFragment fragment = new PlayerControlsFragment();
         Bundle args = new Bundle();
@@ -117,29 +120,31 @@ public class PlayerControlsFragment extends Fragment {
                     ((SeekBar)v.findViewById(R.id.seekBar)).setMax((int)sd.duration);
 
                     SongData sdNext = getPlaybackCoordinator().getNext();
-                    if (sdNext != null) {
+                    if (getPlaybackCoordinator().pcCanPlayNext()) {
                         ((TextView)v.findViewById(R.id.nextSongTitle)).setText(sdNext.title);
                         ((TextView)v.findViewById(R.id.nextSongArtist)).setText(lm.getArtistNameForSongId(sdNext.id));
+                    } else {
+                        sdNext = new SongData();
+                        ((TextView)v.findViewById(R.id.nextSongTitle)).setText("This is the last song");
+                        ((TextView)v.findViewById(R.id.nextSongArtist)).setText("Tap here to see the playlist");
+                        ImageView art = v.findViewById(R.id.nextSongArt);
+                        Bitmap artNext = null;
+                        try {
+                            artNext = getLibraryManager().getAlbumArt(sdNext.albumID);
+                        } catch (IOException e) {}
+                        if (artNext == null) {
+                            art.setImageResource(R.drawable.unknown);
+                        } else {
+                            art.setImageBitmap(artNext);
+                        }
                     }
-                    ImageView art = v.findViewById(R.id.nextSongArt);
 
                     Bitmap artBitmap = null;
-                    Bitmap artNext = null;
                     try {
                         artBitmap = getLibraryManager().getAlbumArt(sd.albumID);
-                    } catch (IOException e) {
-
-                    }
-                    try {
-                        artNext = getLibraryManager().getAlbumArt(sdNext.albumID);
                     } catch (IOException e) {}
 
                     changeCovers(artBitmap);
-                    if (artNext == null) {
-                        art.setImageResource(R.drawable.unknown);
-                    } else {
-                        art.setImageBitmap(artNext);
-                    }
 
                 }
 
@@ -189,8 +194,8 @@ public class PlayerControlsFragment extends Fragment {
         }
 
         Drawable[] images = new Drawable[]{im.getDrawable(), d2};
-        TransitionDrawable transition = new TransitionDrawable(images);
-        TransitionDrawable transition2 = new TransitionDrawable(images);
+        transition = new TransitionDrawable(images);
+        transition2 = new TransitionDrawable(images);
         im.setImageDrawable(transition);
         art.setImageDrawable(transition2);
         transition.startTransition(500);
@@ -230,13 +235,17 @@ public class PlayerControlsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_player_controls, container, false);
+        ImageView backdrop = v.findViewById(R.id.backdrop);
         v.findViewById(R.id.playerFragmentPrevious).setOnClickListener(this::skipPrevious);
         v.findViewById(R.id.playerFragmentNext).setOnClickListener(this::skipNext);
         v.findViewById(R.id.mediaRouterButton).setOnClickListener(this::showMediaRouter);
         v.findViewById(R.id.nextCard).setOnClickListener(this::showPlaylistSheet);
         RenderEffect re = RenderEffect.createBlurEffect(200f,200f, Shader.TileMode.DECAL);
-        ((ImageView)v.findViewById(R.id.backdrop)).setRenderEffect(re);
+        backdrop.setRenderEffect(re);
+        backdrop.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
+        backdrop.setMinimumHeight(backdrop.getMeasuredHeight());
         v.findViewById(R.id.fragmentFrame).setPadding(0,statusBarPadding,0,navbarPadding);
+
         return v;
     }
 }

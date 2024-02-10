@@ -26,8 +26,15 @@ public class PlaybackCoordinator {
 
     public PlaybackCoordinator(Context c, LibraryManager lm) {
         context = c;
-        player = new ExoPlayer.Builder(context).build();
         libraryManager = lm;
+        player = new ExoPlayer.Builder(context).build();
+    }
+
+    private void configurePlayer() {
+        player.stop();
+        player.release();
+        player = null;
+        player = new ExoPlayer.Builder(context).build();
         player.addListener(new Player.Listener() {
             @Override
             public void onPlaybackStateChanged(int playbackState) {
@@ -86,6 +93,7 @@ public class PlaybackCoordinator {
     }
 
     public void playNext(int direction) {
+        configurePlayer();
         changingTrack = true;
         position += direction;
         if (position > queue.size()) {

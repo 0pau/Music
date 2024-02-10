@@ -3,6 +3,7 @@
 
     <style name="Theme.Music" parent="Theme.MusicDefault">
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/launcher_fg_dynamic</item>
-        <item name="android:windowSplashScreenBackground">?attr/card_alt</item>
+        <item name="android:windowSplashScreenBackground">?attr/mainBrandColor</item>
+        <item name="android:windowSplashScreenAnimationDuration">@integer/material_motion_duration_short_1</item>
     </style>
 </resources>

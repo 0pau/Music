@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bottom_sheet"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -22,7 +23,7 @@
         android:fontFamily="sans-serif-medium"
         android:text="Choose output"
         android:textAlignment="center"
-        android:textColor="?attr/fg"
+        android:textColor="?attr/mainTextColor"
         android:textSize="24sp" />
 
     <androidx.recyclerview.widget.RecyclerView

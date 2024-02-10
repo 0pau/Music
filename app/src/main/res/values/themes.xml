@@ -1,37 +1,44 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
 
-    <style name="Theme.MusicDefault" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.MusicDefault" parent="Theme.AppCompat.DayNight.NoActionBar">
 
-        <item name="android:statusBarColor">?attr/card_alt</item>
-        <item name="android:navigationBarColor">?attr/card_alt</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
 
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
 
-        <item name="bg">@color/material_dynamic_neutral_variant95</item>
-        <item name="fg">#AF000000</item>
-        <item name="fg_disabled">@color/material_dynamic_neutral_variant30</item>
-        <item name="fg_disabled2">@color/material_dynamic_neutral_variant70</item>
-        <item name="fg_accent">@color/material_dynamic_primary60</item>
-        <item name="fg_accent2">@color/material_dynamic_primary60</item>
-        <item name="borders">@color/light_border</item>
-        <item name="card">@color/material_dynamic_neutral_variant95</item>
-        <item name="card_alt">@color/material_dynamic_neutral_variant90</item>
-        <item name="cardborder">@color/light_card_border</item>
-        <item name="fg_alpha">@color/black</item>
+        <item name="windowBackground">@color/uui_windowBgLight</item>
+        <item name="mainBrandColor">@color/brand_color</item>
+        <item name="secondaryBrandColor">@color/brand_color</item>
+        <item name="mainTextColor">@color/uui_mainTextLight</item>
+        <item name="secondaryTextColor">@color/uui_secondaryTextLight</item>
+        <item name="cardColor">@color/uui_cardLight</item>
+        <item name="card2Color">@color/uui_card2Light</item>
+        <item name="borderColor">@color/uui_borderLight</item>
+
         <item name="playerControlsFragmentFg">#15000000</item>
         <item name="playerControlsFragmentFgStrong">#35000000</item>
         <item name="playerControlsFragmentFgVeryStrong">#60000000</item>
         <item name="playerControlsFragmentFgVeryStrong2">#90000000</item>
-        <!-- Customize your theme here. -->
 
-        <item name="android:windowBackground">?attr/bg</item>
-        <item name="android:textColorPrimary">?attr/fg</item>
+        <item name="bottomSheetDialogTheme">@style/Theme.Music.BottomSheetDialog.P</item>
+
+        <item name="android:windowBackground">?attr/windowBackground</item>
+        <item name="android:textColorPrimary">?attr/mainTextColor</item>
     </style>
 
     <style name="Theme.Music" parent="Theme.MusicDefault">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="Theme.Music.BottomSheetDialog.P" parent="Theme.Music.BottomSheetDialog">
+        <item name="windowBackground">@color/uui_windowBgLight</item>
+        <item name="mainBrandColor">@color/brand_color</item>
+        <item name="secondaryBrandColor">@color/brand_color</item>
+        <item name="mainTextColor">@color/uui_mainTextLight</item>
+        <item name="secondaryTextColor">@color/uui_secondaryTextLight</item>
+        <item name="cardColor">@color/uui_cardLight</item>
+        <item name="borderColor">@color/uui_borderLight</item>
     </style>
 </resources>

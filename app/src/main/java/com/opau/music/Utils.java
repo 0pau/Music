@@ -1,6 +1,15 @@
 package com.opau.music;
 
 import android.animation.ValueAnimator;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.HardwareRenderer;
+import android.graphics.RecordingCanvas;
+import android.graphics.RenderEffect;
+import android.graphics.RenderNode;
+import android.graphics.Shader;
+import android.renderscript.RenderScript;
 import android.view.View;
 import android.widget.LinearLayout;
 

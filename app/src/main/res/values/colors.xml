@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">@android:color/transparent</color>
 
-    <color name="light_background">#F0F0F0</color>
-    <color name="light_card">#FFFFFF</color>
-    <color name="light_border">#D0D0D0</color>
-    <color name="light_card_border">#DEDEDE</color>
-    <color name="light_bg_text">#000000</color>
-    <color name="black_alpha">#50000000</color>
+    <color name="uui_windowBgLight">#EAEAEA</color>
+    <color name="uui_windowBgDark">#1A1A1A</color>
+    <color name="uui_mainTextLight">#222222</color>
+    <color name="uui_mainTextDark">#F0F0F0</color>
+    <color name="uui_secondaryTextLight">#5F5F5F</color>
+    <color name="uui_secondaryTextDark">#A0A0A0</color>
+    <color name="uui_cardLight">#FFFFFF</color>
+    <color name="uui_cardDark">#353535</color>
+    <color name="uui_card2Light">#F4F4F4</color>
+    <color name="uui_card2Dark">#252525</color>
+    <color name="uui_borderLight">#D0D0D0</color>
+    <color name="uui_borderDark">#5F5F5F</color>
 
-    <color name="dark_background">#000000</color>
-    <color name="dark_card">#202020</color>
-    <color name="dark_border">#3E3E3E</color>
-    <color name="dark_bg_text">#FFFFFF</color>
-    <color name="white_alpha">#B0FFFFFF</color>
-
-    <color name="brand_color_old">#D6236E</color>
-    <color name="brand_color">@color/material_dynamic_primary40</color>
-    <color name="brand_color_dark">@color/material_dynamic_primary30</color>
+    <color name="brand_color">#D6236E</color>
+    <color name="brand_color_secondary">#F773AB</color>
+    <color name="brand_color_foreground">#FFFFFF</color>
 </resources>

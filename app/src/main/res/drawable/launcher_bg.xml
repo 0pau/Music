@@ -16,8 +16,8 @@
             android:endX="85"
             android:endY="123"
             android:type="linear">
-          <item android:offset="0" android:color="@color/material_dynamic_primary60"/>
-          <item android:offset="1" android:color="@color/material_dynamic_primary10"/>
+          <item android:offset="0" android:color="@color/brand_color"/>
+          <item android:offset="1" android:color="@color/brand_color"/>
         </gradient>
       </aapt:attr>
     </path>

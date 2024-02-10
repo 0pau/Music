@@ -3,7 +3,6 @@
     android:id="@+id/menu_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/card_alt"
     android:divider="@drawable/bottom_menu_gap"
     android:orientation="horizontal"
     android:padding="10dp">

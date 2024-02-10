@@ -5,18 +5,24 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
 import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +31,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,11 +53,14 @@ public class MainActivity extends AppCompatActivity {
     Entity.Type currentView = Entity.Type.SONG;
     public boolean nowPlayingExpanded = false;
     NowPlayingSwipeListener swiper;
+    HomeScreenAdapter homeScreenAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        long start = System.currentTimeMillis();
 
         if (!Permissions.checkPermissions(this)) {
             Intent i = new Intent(this, PermissionAlert.class);
@@ -67,39 +77,67 @@ public class MainActivity extends AppCompatActivity {
 
         View loadIndicator = getLayoutInflater().inflate(R.layout.library_load_pb, null);
         loadIndicator.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
         ((Toolbar)findViewById(R.id.toolbar2)).addView(loadIndicator);
+        ((Toolbar)findViewById(R.id.toolbar2)).setOnMenuItemClickListener((itm)->{
+            if (itm.getItemId() == R.id.go_to_settings) {
+                Intent i = new Intent(this, Settings.class);
+                startActivity(i);
+            }
+            return true;
+        });
 
+        /*
         RecyclerView rc = findViewById(R.id.contentRecycler);
         rc.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         RecyclerViewAdapter adapter = new RecyclerViewAdapter();
-        rc.setAdapter(adapter);
+        rc.setAdapter(adapter);*/
 
         BottomNavigation nav = findViewById(R.id.nav);
-        nav.setOnItemSelectedListener((itm)->{
-            currentView = Entity.Type.values()[itm];
-            adapter.refresh();
-        });
 
-        ((App)getApplication()).getLibraryManager().updateLibrary();
-        loadIndicator.setVisibility(View.GONE);
-        adapter.refresh();
-        int songs = ((App)getApplication()).getLibraryManager().getSongCount();
-        ((Toolbar)findViewById(R.id.toolbar2)).setSubtitle(getResources().getQuantityString(R.plurals.song_count, songs, songs, songs));
+
+        Thread updateRequester = new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                int u = ((App)getApplication()).getLibraryManager().updateLibrary();
+                finished(u);
+            }
+            void finished(int updateCount) {
+                runOnUiThread(()->{
+                    loadIndicator.setVisibility(View.GONE);
+                    if (updateCount != 0) {
+                        //adapter.refresh();
+                    }
+                    int songs = ((App)getApplication()).getLibraryManager().getSongCount();
+                    ((Toolbar)findViewById(R.id.toolbar2)).setSubtitle(getResources().getQuantityString(R.plurals.song_count, songs, songs, songs));
+                });
+            }
+        };
+        updateRequester.start();
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(this::setupPcListener, 100);
+
+        homeScreenAdapter = new HomeScreenAdapter(getSupportFragmentManager(), getLifecycle());
+        ViewPager2 homeViewPager = findViewById(R.id.homeViewPager);
+        homeViewPager.setAdapter(homeScreenAdapter);
+
+        //currentView = Entity.Type.values()[itm];
+        //adapter.refresh();
+        nav.setOnItemSelectedListener(homeViewPager::setCurrentItem);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         PlayerControlsFragment fragment = new PlayerControlsFragment();
         fragmentTransaction.add(R.id.fragmentContainerView, fragment);
         fragmentTransaction.commit();
-
         setWindowInsets(nav, fragment);
 
         LinearLayout nowPlayingPanel = findViewById(R.id.nowPlayingPanel);
         swiper = new NowPlayingSwipeListener(this, nowPlayingPanel, findViewById(R.id.fragmentContainerView), findViewById(R.id.nowPlayingHead), this);
         nowPlayingPanel.setOnTouchListener(swiper);
+        long end = System.currentTimeMillis();
+
+        Log.i("Performance", "MainActivity load time was " + (end-start) + " ms");
     }
 
     void setWindowInsets(BottomNavigation nav, PlayerControlsFragment playerControlsFragment) {
@@ -142,19 +180,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void shufflePlay(View v) {
-        ArrayList<Entity> entities = ((App)getApplication()).getLibraryManager().getSongs();
-        ArrayList<Long> playlist = new ArrayList<>();
-        for (Entity e: entities) {
-            playlist.add(((SongData)e.getData()).id);
-        }
-        playlist.sort((o1, o2) -> {
-            Random r = new Random();
-            return (r.nextBoolean())?1:-1;
-        });
-        getPlaybackCoordinator().queueList(playlist, 0);
-    }
-
     public void updateSongInfo() {
         SongData info = getPlaybackCoordinator().getCurrentlyPlaying();
         runOnUiThread(()->{
@@ -189,6 +214,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private class HomeScreenAdapter extends FragmentStateAdapter {
+
+        public HomeScreenAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+            super(fragmentManager, lifecycle);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            switch (position) {
+                case 0:
+                    return new SongLibraryFragment();
+            }
+            return null;
+        }
+
+        @Override
+        public int getItemCount() {
+            return 1;
+        }
+    }
+
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.SongViewHolder> {
 
         int itmCount = 0;
@@ -197,6 +244,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public SongViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_item, parent, false);
+            return new SongViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
+            View v = holder.itemView;
+            v.setOnClickListener(null);
+            v.findViewById(R.id.songItemSubtitle).setVisibility(View.VISIBLE);
+            ((ImageView)v.findViewById(R.id.albumArt)).setImageBitmap(null);
             switch (entities.get(position).getEntityType()) {
                 case SONG:
                     SongData sd = (SongData) entities.get(position).getData();
@@ -206,8 +262,7 @@ public class MainActivity extends AppCompatActivity {
                     AlbumData ald = (AlbumData) ((App)getApplication()).getLibraryManager().getEntityForId(Entity.Type.ALBUM, sd.albumID).getData();
                     try {
                         ((ImageView)v.findViewById(R.id.albumArt)).setImageBitmap(((App)getApplication()).getLibraryManager().getAlbumArtThumbnail(64, ald.id));
-                    } catch (IOException e) {
-                        Log.e("SongList", "Couldn't find art.");
+                    } catch (Exception e) {
                     }
                     v.setTag(position);
                     v.setOnClickListener((e)->{
@@ -218,24 +273,20 @@ public class MainActivity extends AppCompatActivity {
                         getPlaybackCoordinator().queueList(queue, (int)v.getTag());
                     });
                     break;
+                case ALBUM:
+                    AlbumData albumData = (AlbumData) entities.get(position).getData();
+                    ((TextView)v.findViewById(R.id.songItemTitle)).setText(albumData.title);
+                    v.findViewById(R.id.songItemSubtitle).setVisibility(View.GONE);
+                    try {
+                        ((ImageView)v.findViewById(R.id.albumArt)).setImageBitmap(((App)getApplication()).getLibraryManager().getAlbumArtThumbnail(64, albumData.id));
+                    } catch (Exception e) {
+                    }
+                    break;
             }
-            return new SongViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
-            View v = holder.itemView;
         }
 
         public void refresh() {
-            switch (currentView) {
-                case SONG:
-                    entities = ((App)getApplication()).getLibraryManager().getSongs();
-                    break;
-                default:
-                    entities = new ArrayList<>();
-                    break;
-            }
+            entities = ((App)getApplication()).getLibraryManager().getEntities(currentView);
             sort();
             notifyDataSetChanged();
         }
@@ -282,5 +333,4 @@ public class MainActivity extends AppCompatActivity {
             swiper.collapse();
         }
     }
-
 }

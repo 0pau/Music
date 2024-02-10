@@ -4,19 +4,18 @@
         <attr name="menuResource" format="integer" />
     </declare-styleable>
 
-    <attr name="bg" format="color"/>
-    <attr name="fg" format="color"/>
-    <attr name="fg_disabled" format="color"/>
-    <attr name="fg_disabled2" format="color"/>
-    <attr name="fg_accent" format="color"/>
-    <attr name="fg_accent2" format="color"/>
-    <attr name="fg_alpha" format="color"/>
-    <attr name="borders" format="color"/>
-    <attr name="card" format="color"/>
-    <attr name="card_alt" format="color"/>
-    <attr name="cardborder" format="color"/>
     <attr name="playerControlsFragmentFg" format="color"/>
     <attr name="playerControlsFragmentFgStrong" format="color"/>
     <attr name="playerControlsFragmentFgVeryStrong" format="color"/>
     <attr name="playerControlsFragmentFgVeryStrong2" format="color"/>
+
+    <attr name="windowBackground" format="color"/>
+    <attr name="mainTextColor" format="color"/>
+    <attr name="secondaryTextColor" format="color"/>
+    <attr name="cardColor" format="color"/>
+    <attr name="card2Color" format="color"/>
+    <attr name="borderColor" format="color"/>
+    <attr name="mainBrandColor" format="color"/>
+    <attr name="secondaryBrandColor" format="color"/>
+    <attr name="brandForeground" format="color"/>
 </resources>

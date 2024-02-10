@@ -2,8 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="?attr/playerControlsFragmentFgStrong"></solid>
-            <corners android:radius="100dp"></corners>
+            <solid android:color="?attr/secondaryTextColor"/>
+            <corners android:radius="100dp"/>
         </shape>
     </item>
 </layer-list>

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,11 +21,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class PlaylistDialog extends BottomSheetDialog {
+public class PlaylistDialog extends CustomBottomSheetDialog {
     PlaybackCoordinator coordinator;
     public PlaylistDialog(@NonNull Context context, PlaybackCoordinator coordinator) {
         super(context);
         this.coordinator = coordinator;
+        context.setTheme(R.style.Theme_Music_BottomSheetDialog);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {

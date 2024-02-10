@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialogInterface"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bottom_sheet"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -27,7 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="0"
             android:text="Swipe left or right to remove a song, long press and move to reorder."
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="?attr/mainTextColor" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

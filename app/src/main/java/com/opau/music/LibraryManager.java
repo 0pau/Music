@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -61,107 +62,79 @@ public class LibraryManager {
         return false;
     }
 
-    public void updateLibrary() {
-        updateSongs();
-        updateArtists();
-        updateAlbums();
+    public int updateLibrary() {
+        int updateCount = 0;
+        long start = System.currentTimeMillis();
+        /*
+        updateCount += updateSongs();
+        updateCount += updateArtists();
+        updateCount += updateAlbums();
+        */
+        updateCount = updateField(Entity.Type.SONG)+updateField(Entity.Type.ARTIST)+updateField(Entity.Type.ALBUM);
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {};
+        long end = System.currentTimeMillis();
+        Log.i("Performance", "Library update took " + (end-start) + " ms");
+        return updateCount;
     }
 
     @SuppressLint("Range")
-    public ArrayList<Entity> getSongs() {
+    public ArrayList<Entity> getEntities(Entity.Type type) {
         ArrayList<Entity> ret = new ArrayList<>();
-        Cursor songCursor = db.rawQuery("SELECT id FROM songs", null);
+        String table = "";
 
-        if (songCursor != null && songCursor.moveToFirst()) {
-            do {
-                Entity e = getEntityForId(Entity.Type.SONG, songCursor.getLong(0));
-                ret.add(e);
-            } while (songCursor.moveToNext());
+        switch (type) {
+            case SONG:
+                table = "songs";
+                break;
+            case ARTIST:
+                table = "artists";
+                break;
+            case ALBUM:
+                table = "albums";
+                break;
         }
-        songCount = ret.size();
+
+        Cursor c = db.rawQuery("SELECT id FROM "+table, null);
+        if (c != null && c.moveToFirst()) {
+            do {
+                Entity e = getEntityForId(type, c.getLong(0));
+                ret.add(e);
+            } while (c.moveToNext());
+        }
+        c.close();
         return ret;
     }
 
-    public void updateSongs() {
-        ContentValues updaterValues = new ContentValues();
-        updaterValues.put("valid", 0);
-        db.update("songs", updaterValues, null, null);
-        String[] projection = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST_ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA};
-        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = context.getContentResolver().query(musicUri, projection, MediaStore.Audio.Media.IS_MUSIC + " != 0", null, "TITLE ASC");
-        int newSongs = 0;
 
-        if (musicCursor == null || !musicCursor.moveToNext()) {
-            return;
+
+    int updateField(Entity.Type type) {
+        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        int newItems = 0, updatedItems = 0, deletedItems = 0;
+        String table = "";
+        String[] projection = new String[]{};
+        switch (type) {
+            case SONG:
+                projection = new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST_ID, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.DATA};
+                table = "songs";
+                break;
+            case ARTIST:
+                projection = new String[]{MediaStore.Audio.Media.ARTIST_ID, MediaStore.Audio.Media.ARTIST};
+                table = "artists";
+                break;
+            case ALBUM:
+                projection = new String[]{MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ALBUM};
+                table = "albums";
+                break;
         }
-        do {
-            ContentValues cv = new ContentValues();
-            long id = musicCursor.getLong(0);
-            cv.put("id", id);
-            cv.put("title", musicCursor.getString(1));
-            cv.put("artist_id", musicCursor.getLong(2));
-            cv.put("album_id", musicCursor.getLong(3));
-            cv.put("duration", musicCursor.getString(4));
-            cv.put("path", musicCursor.getString(5));
-            cv.put("valid", 1);
-            if (isEntityInLibrary(Entity.Type.SONG, id)) {
-                db.update("songs", cv, "id = " + id, null);
-            } else {
-                db.insert("songs", null, cv);
-                newSongs++;
-            }
-        } while (musicCursor.moveToNext());
-        int deletedSongs = db.delete("songs", "valid = 0", null);
-        Log.i("LM/Songs", newSongs + " added, " + deletedSongs + " deleted.");
-        musicCursor.close();
-    }
-
-    void updateArtists() {
-        int newArtists = 0;
         ContentValues updaterValues = new ContentValues();
         updaterValues.put("valid", 0);
-        db.update("artists", updaterValues, null, null);
-        String[] projection = {MediaStore.Audio.Media.ARTIST_ID, MediaStore.Audio.Media.ARTIST};
-        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        db.update(table, updaterValues, null, null);
+
         Cursor c = context.getContentResolver().query(musicUri, projection, MediaStore.Audio.Media.IS_MUSIC + "!= 0", null, "artist_id ASC");
         if (c == null || !c.moveToFirst()) {
-            return;
-        }
-        ArrayList<Long> ids = new ArrayList<>();
-        do {
-            long id = c.getLong(0);
-            if (ids.contains(id)) {
-                continue;
-            } else {
-                ids.add(id);
-            }
-            ContentValues cv = new ContentValues();
-            cv.put("id", id);
-            cv.put("name", c.getString(1));
-            cv.put("valid", 1);
-            if (isEntityInLibrary(Entity.Type.ARTIST, id)) {
-                db.update("artists", cv, "id = " + id, null);
-            } else {
-                db.insert("artists", null, cv);
-                newArtists++;
-            }
-        } while (c.moveToNext());
-        int deleted = db.delete("artists", "valid = 0", null);
-        Log.i("LM/Artists", newArtists + " added, " + deleted + " deleted.");
-        c.close();
-    }
-
-    void updateAlbums() {
-        int newAlbums = 0;
-        Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
-        ContentValues updaterValues = new ContentValues();
-        updaterValues.put("valid", 0);
-        db.update("albums", updaterValues, null, null);
-        String[] projection = {MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ALBUM};
-        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor c = context.getContentResolver().query(musicUri, projection, MediaStore.Audio.Media.IS_MUSIC + "!= 0", null, "artist_id ASC");
-        if (c == null || !c.moveToFirst()) {
-            return;
+            return 0;
         }
         ArrayList<Long> ids = new ArrayList<>();
         do {
@@ -172,24 +145,67 @@ public class LibraryManager {
                 continue;
             }
             ContentValues cv = new ContentValues();
-            cv.put("id", id);
-            cv.put("valid", 1);
-            cv.put("title", c.getString(1));
-            Uri art_path = ContentUris.withAppendedId(artworkUri, id);
-            cv.put("albumArtUri", art_path.toString());
+            switch (type) {
+                case SONG:
+                    cv.put("id", id);
+                    cv.put("title", c.getString(1));
+                    cv.put("artist_id", c.getLong(2));
+                    cv.put("album_id", c.getLong(3));
+                    cv.put("duration", c.getString(4));
+                    cv.put("path", c.getString(5));
+                    break;
+                case ARTIST:
+                    cv.put("id", id);
+                    cv.put("name", c.getString(1));
+                    break;
+                case ALBUM:
+                    cv.put("id", id);
+                    cv.put("title", c.getString(1));
+                    break;
+            }
 
-            if (isEntityInLibrary(Entity.Type.ALBUM, id)) {
-                db.update("albums", cv, "id =" + id, null);
+            if (isEntityInLibrary(type, id)) {
+                if (hasEntityChanged(type, id, cv)) {
+                    db.update(table, cv, "id = " + id, null);
+                    updatedItems++;
+                }
+                cv = new ContentValues();
+                cv.put("valid", 1);
+                db.update(table, cv, "id = " + id, null);
             } else {
-                db.insert("albums", null, cv);
-                newAlbums++;
+                db.insert(table, null, cv);
+                newItems++;
             }
 
         } while (c.moveToNext());
-        int deleted = db.delete("albums", "valid = 0", null);
-        Log.i("LM/Albums", newAlbums + " added, " + deleted + " deleted.");
-
+        deletedItems = db.delete("albums", "valid = 0", null);
+        Log.i("LibraryManager/"+table, newItems + " added, " + updatedItems + " updated, " + deletedItems + " deleted.");
         c.close();
+        return newItems+updatedItems+deletedItems;
+    }
+
+    public boolean hasEntityChanged(Entity.Type type, long id, ContentValues newValues) {
+        newValues.put("valid", 0);
+        String table = "";
+        switch (type) {
+            case SONG:
+                table = "songs";
+                break;
+            case ARTIST:
+                table = "artists";
+                break;
+            case ALBUM:
+                table = "albums";
+                break;
+        }
+        Cursor c =  db.rawQuery("SELECT * FROM "+table+" WHERE id = " + id, null);
+        c.moveToFirst();
+        ContentValues oldValues = new ContentValues();
+        DatabaseUtils.cursorRowToContentValues(c, oldValues);
+        //Log.v("LM/Check", oldValues.toString() + " new: " + newValues.toString());
+        c.close();
+
+        return !oldValues.toString().equals(newValues.toString());
     }
 
     @SuppressLint("Range")
@@ -224,13 +240,12 @@ public class LibraryManager {
                 c.close();
                 break;
             case ALBUM:
-                c = db.rawQuery("SELECT id, title,albumArtUri FROM albums WHERE id = " + id, null);
+                c = db.rawQuery("SELECT id, title FROM albums WHERE id = " + id, null);
                 if (c.moveToFirst()) {
                     e.setEntityType(Entity.Type.ALBUM);
                     AlbumData ad = new AlbumData();
                     ad.id = c.getLong(0);
                     ad.title = c.getString(1);
-                    ad.albumArtUri = Uri.parse(c.getString(2));
                     e.setData(ad);
                 }
                 c.close();
@@ -260,5 +275,13 @@ public class LibraryManager {
 
     public Uri getAlbumArtUri(long id) {
         return ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, id);
+    }
+
+    public void deleteLibrary() {
+        db.execSQL("DROP TABLE IF EXISTS songs");
+        db.execSQL("DROP TABLE IF EXISTS artists");
+        db.execSQL("DROP TABLE IF EXISTS albums");
+        db.execSQL("DROP TABLE IF EXISTS playlists");
+        dbHelper.onCreate(db);
     }
 }

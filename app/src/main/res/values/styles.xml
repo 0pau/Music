@@ -4,20 +4,32 @@
     <style name="ToolBar" parent="Widget.AppCompat.Toolbar">
         <item name="titleTextAppearance">@style/ToolBar.Title</item>
         <item name="subtitleTextAppearance">@style/ToolBar.Subtitle</item>
-        <item name="android:background">?attr/card_alt</item>
     </style>
 
-    <style name="ToolBar.Title" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">?attr/fg</item>
+    <style name="ToolBar.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?attr/mainTextColor</item>
     </style>
 
     <style name="ToolBar.Subtitle" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">?attr/fg_disabled</item>
+        <item name="android:textColor">?attr/secondaryTextColor</item>
         <item name="android:textSize">13sp</item>
     </style>
 
     <style name="Theme.Music.Altered" parent="Theme.Music">
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:navigationBarColor">@color/transparent</item>
+    </style>
+
+    <style name="Theme.Music.BottomSheetDialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowMinWidthMajor">100%</item>
+        <item name="android:windowMinWidthMinor">100%</item>
+        <item name="android:navigationBarColor">?attr/windowBackground</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!--<item name="android:backgroundTint">@color/transparent</item>-->
     </style>
 </resources>

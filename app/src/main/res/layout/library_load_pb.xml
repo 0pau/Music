@@ -10,8 +10,8 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_weight="0"
-        android:indeterminateTint="?attr/fg_accent"
-        android:progressTint="?attr/fg_accent" />
+        android:indeterminateTint="?attr/mainBrandColor"
+        android:progressTint="?attr/mainBrandColor" />
 
     <TextView
         android:id="@+id/textView3"
@@ -21,5 +21,5 @@
         android:layout_weight="0"
         android:fontFamily="sans-serif-medium"
         android:text="Updating music library..."
-        android:textColor="?attr/fg_accent" />
+        android:textColor="?attr/mainBrandColor" />
 </LinearLayout>
