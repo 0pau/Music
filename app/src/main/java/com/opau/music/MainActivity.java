@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
         setWindowInsets(nav, fragment);
 
-        LinearLayout nowPlayingPanel = findViewById(R.id.nowPlayingPanel);
+        ConstraintLayout nowPlayingPanel = findViewById(R.id.nowPlayingPanel);
         swiper = new NowPlayingSwipeListener2(this, nowPlayingPanel, findViewById(R.id.fragmentContainerView), findViewById(R.id.nowPlayingHead), this);
         nowPlayingPanel.setOnTouchListener(swiper);
         long end = System.currentTimeMillis();
@@ -184,10 +185,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showNowPlayingPanel() {
-        LinearLayout panel = findViewById(R.id.nowPlayingPanel);
+        ConstraintLayout panel = findViewById(R.id.nowPlayingPanel);
         if (panel.getVisibility() != View.VISIBLE) {
-            panel.measure(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            int panelHeight = panel.getMeasuredHeight();
+            panel.measure(View.MeasureSpec.AT_MOST, View.MeasureSpec.AT_MOST);
+            int panelHeight = panel.getHeight();
             panel.setTranslationY(panelHeight);
             panel.setVisibility(View.VISIBLE);
             panel.animate().setDuration(350).translationY(0).setInterpolator(Interpolators.easeOut).start();

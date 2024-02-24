@@ -79,25 +79,42 @@
                 android:gravity="bottom"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/nowPlayingPanel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:animateLayoutChanges="true"
                     android:background="@drawable/now_playing_panel_bg"
                     android:clickable="true"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toStartOf="@+id/fragmentContainerView"
+                    app:layout_constraintStart_toStartOf="@+id/fragmentContainerView">
+
+                    <androidx.fragment.app.FragmentContainerView
+                        android:id="@+id/fragmentContainerView"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_conversion_absoluteHeight="0dp"
+                        tools:layout_conversion_absoluteWidth="0dp" />
 
                     <LinearLayout
                         android:id="@+id/nowPlayingHead"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingVertical="10dp"
-                        android:paddingRight="15dp">
+                        android:paddingRight="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_conversion_absoluteHeight="0dp"
+                        tools:layout_conversion_absoluteWidth="0dp">
 
                         <LinearLayout
                             android:id="@+id/nowPlayingDisplay"
@@ -109,13 +126,13 @@
                             android:paddingHorizontal="15dp">
 
                             <ImageView
-                                android:id="@+id/albumArt"
+                                android:id="@+id/imageView"
                                 android:layout_width="45dp"
                                 android:layout_height="45dp"
+                                android:layout_weight="0"
                                 android:background="@drawable/cover_clip_small"
                                 android:clipToOutline="true"
-                                android:scaleType="centerCrop"
-                                custom:srcCompat="@drawable/unknown" />
+                                app:srcCompat="@drawable/unknown" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -157,13 +174,7 @@
 
                     </LinearLayout>
 
-                    <androidx.fragment.app.FragmentContainerView
-                        android:id="@+id/fragmentContainerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
-
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
         </FrameLayout>
@@ -173,7 +184,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:animateLayoutChanges="true"
             android:background="?attr/card2Color"
             android:orientation="horizontal"
             custom:menuResource="@menu/main">

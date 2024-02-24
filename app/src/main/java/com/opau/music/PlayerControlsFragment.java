@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Mesh;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,6 +16,9 @@ import android.media.MediaRouter;
 import android.os.Bundle;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -244,8 +248,7 @@ public class PlayerControlsFragment extends Fragment {
         backdrop.setRenderEffect(re);
         backdrop.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
         backdrop.setMinimumHeight(backdrop.getMeasuredHeight());
-        v.findViewById(R.id.fragmentFrame).setPadding(0,statusBarPadding,0,navbarPadding);
-
+        v.findViewById(R.id.fragmentFrame).setPadding(0,0,0,navbarPadding);
         return v;
     }
 }
