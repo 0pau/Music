@@ -126,21 +126,11 @@ public class PlayerControlsFragment extends Fragment {
                     SongData sdNext = getPlaybackCoordinator().getNext();
                     if (getPlaybackCoordinator().pcCanPlayNext()) {
                         ((TextView)v.findViewById(R.id.nextSongTitle)).setText(sdNext.title);
-                        ((TextView)v.findViewById(R.id.nextSongArtist)).setText(lm.getArtistNameForSongId(sdNext.id));
+                        //((TextView)v.findViewById(R.id.nextSongArtist)).setText(lm.getArtistNameForSongId(sdNext.id));
                     } else {
                         sdNext = new SongData();
                         ((TextView)v.findViewById(R.id.nextSongTitle)).setText("This is the last song");
-                        ((TextView)v.findViewById(R.id.nextSongArtist)).setText("Tap here to see the playlist");
-                        ImageView art = v.findViewById(R.id.nextSongArt);
-                        Bitmap artNext = null;
-                        try {
-                            artNext = getLibraryManager().getAlbumArt(sdNext.albumID);
-                        } catch (IOException e) {}
-                        if (artNext == null) {
-                            art.setImageResource(R.drawable.unknown);
-                        } else {
-                            art.setImageBitmap(artNext);
-                        }
+                        //((TextView)v.findViewById(R.id.nextSongArtist)).setText("Tap here to see the playlist");
                     }
 
                     Bitmap artBitmap = null;
@@ -162,6 +152,14 @@ public class PlayerControlsFragment extends Fragment {
                     playerFragmentPrev.setEnabled(getPlaybackCoordinator().pcCanPlayPrevious());
                     needsUpdate = isPlaying;
                     update();
+                    if (getPlaybackCoordinator().getCurrentSongFormatInfo().getMimeType().contains("FLAC")) {
+                        v.findViewById(R.id.losslessCard).animate().alpha(0.65f).setDuration(250).start();
+                        SoundFormatInfo format = getPlaybackCoordinator().getCurrentSongFormatInfo();
+                        String desc = String.format("%s %.1f kHz", format.getMimeType(), (double)format.getSampleRate()/1000);
+                        ((TextView)v.findViewById(R.id.formatDescription)).setText(desc);
+                    } else {
+                        v.findViewById(R.id.losslessCard).animate().alpha(0).setDuration(250).start();
+                    }
                 }
             });
             ((SeekBar)v.findViewById(R.id.seekBar)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -248,6 +246,7 @@ public class PlayerControlsFragment extends Fragment {
         backdrop.setRenderEffect(re);
         backdrop.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
         backdrop.setMinimumHeight(backdrop.getMeasuredHeight());
+        v.findViewById(R.id.swipeHandle).setPadding(0, statusBarPadding, 0,0);
         v.findViewById(R.id.fragmentFrame).setPadding(0,0,0,navbarPadding);
         return v;
     }

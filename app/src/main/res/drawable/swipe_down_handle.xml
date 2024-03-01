@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:alpha="0.25">
+    <item android:gravity="start|center_vertical" android:width="50dp" android:height="10dp">
+        <rotate android:pivotY="50%" android:pivotX="50%" android:fromDegrees="20" android:toDegrees="0">
+            <shape android:shape="rectangle">
+                <solid android:color="@color/white"/>
+                <corners android:radius="100dp"/>
+            </shape>
+        </rotate>
+    </item>
+    <item android:gravity="end|center_vertical" android:width="50dp" android:height="10dp">
+        <rotate android:pivotY="50%" android:pivotX="50%" android:fromDegrees="-20" android:toDegrees="0">
+            <shape android:shape="rectangle">
+                <solid android:color="@color/white"/>
+                <corners android:radius="100dp"/>
+            </shape>
+        </rotate>
+    </item>
+    <item android:width="88dp" android:height="32dp">
+        <shape/>
+    </item>
+</layer-list>

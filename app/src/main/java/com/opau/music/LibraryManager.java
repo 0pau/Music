@@ -153,6 +153,10 @@ public class LibraryManager {
                     cv.put("album_id", c.getLong(3));
                     cv.put("duration", c.getString(4));
                     cv.put("path", c.getString(5));
+                    if (Integer.parseInt(cv.getAsString("duration")) < (30*1000)) {
+                        cv = null;
+                        continue;
+                    }
                     break;
                 case ARTIST:
                     cv.put("id", id);

@@ -24,7 +24,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 
-public class MediaRouterDialog extends CustomBottomSheetDialog {
+public class MediaRouterDialog extends BottomSheetDialog {
     public MediaRouterDialog(@NonNull Context context) {
         super(context);
     }

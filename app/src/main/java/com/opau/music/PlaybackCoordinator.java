@@ -4,10 +4,14 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.OptIn;
+import androidx.media3.common.Format;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
+import androidx.media3.common.Tracks;
+import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 
 import java.util.ArrayList;
@@ -19,6 +23,7 @@ public class PlaybackCoordinator {
     Player player;
     Context context;
     LibraryManager libraryManager;
+    private SoundFormatInfo currentSongFormatInfo;
     private boolean changingTrack = false;
     private boolean canPlayPrevious = false;
     private boolean canPlayNext = false;
@@ -45,8 +50,19 @@ public class PlaybackCoordinator {
             }
 
             @Override
+            public void onTracksChanged(Tracks tracks) {
+                //Log.v("Tracks", tracks.getGroups().get(0).getTrackFormat(0).sampleMimeType);
+                Player.Listener.super.onTracksChanged(tracks);
+            }
+
+            @OptIn(markerClass = UnstableApi.class) @Override
             public void onIsPlayingChanged(boolean isPlaying) {
                 Player.Listener.super.onIsPlayingChanged(isPlaying);
+                if (isPlaying) {
+                    Tracks tracks = player.getCurrentTracks();
+                    Format fmt = tracks.getGroups().get(0).getTrackFormat(0);
+                    currentSongFormatInfo = new SoundFormatInfo(fmt.sampleMimeType, fmt.sampleRate,0);
+                }
                 for (PlaybackCoordinatorEventListener listener: listeners) {
                     listener.onPlayStateChanged(isPlaying);
                 }
@@ -184,5 +200,9 @@ public class PlaybackCoordinator {
 
     public void swap(int p1, int p2) {
         Collections.swap(queue, p1, p2);
+    }
+
+    public SoundFormatInfo getCurrentSongFormatInfo() {
+        return currentSongFormatInfo;
     }
 }

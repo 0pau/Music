@@ -29,6 +29,8 @@ public class CustomBottomSheetDialog extends BottomSheetDialog {
 
     @Override
     public void dismiss() {
+        super.dismiss();
+        /*
         findViewById(com.google.android.material.R.id.design_bottom_sheet).clearAnimation();
         Animation a = AnimationUtils.loadAnimation(getContext(), R.anim.slide_down);
         a.setInterpolator(Interpolators.easeInOut);
@@ -53,6 +55,7 @@ public class CustomBottomSheetDialog extends BottomSheetDialog {
         ValueAnimator va = ValueAnimator.ofFloat(0.5f, 0f);
         va.start();
         va.addUpdateListener(animation -> getWindow().setDimAmount((float)animation.getAnimatedValue()));
+         */
     }
 
     private void dsup() {
